@@ -180,15 +180,13 @@ main:focus { outline: none; }
   position: relative; isolation: isolate; overflow: hidden;
   margin-top: calc(-1 * var(--cab));
   height: calc(100svh - var(--aviso, 0px)); min-height: 600px;
-  display: grid; grid-template-rows: 1fr auto; justify-items: center;
+  display: grid; grid-template-rows: 1fr; justify-items: center;
   background: var(--noche); color: var(--marfil); text-align: center;
   --acento: var(--marfil);
 }
 .hero__fotos, .hero__velo { position: absolute; inset: 0; }
 .hero__fotos { z-index: -2; }
-.hero__foto { position: absolute; inset: 0; opacity: 0; transition: opacity 1.6s var(--ease-suave); }
-.hero__foto.activa { opacity: 1; z-index: 2; }
-.hero__foto.sale { opacity: 1; z-index: 1; transition: none; }
+.hero__foto { position: absolute; inset: 0; }
 .hero__foto img { width: 100%; height: 100%; object-fit: cover; }
 .hero__velo {
   z-index: -1;
@@ -196,7 +194,7 @@ main:focus { outline: none; }
     linear-gradient(180deg, rgb(var(--sombra) / 0.74) 0%, rgb(var(--sombra) / 0.52) 13%, rgb(var(--sombra) / 0.14) 30%, rgb(var(--sombra) / 0.1) 46%, rgb(var(--sombra) / 0.5) 78%, rgb(var(--sombra) / 0.8) 100%),
     radial-gradient(ellipse 58% 46% at 50% 58%, rgb(var(--sombra) / 0.5), transparent 76%);
 }
-.hero__contenido { align-self: center; width: min(62rem, 100% - 2 * var(--margen)); padding-top: var(--cab); display: grid; justify-items: center; }
+.hero__contenido { align-self: center; width: min(62rem, 100% - 2 * var(--margen)); padding-block: var(--cab) clamp(2rem, 6vh, 4rem); display: grid; justify-items: center; }
 .hero__logo svg { width: clamp(160px, 16vw, 250px); height: auto; margin-bottom: clamp(1.75rem, 4.6vh, 3.25rem); }
 .hero h1 { font-size: clamp(2.35rem, 1.3rem + 3.4vw, 4.3rem); line-height: 1.04; max-width: 15ch; text-shadow: 0 1px 24px rgb(var(--sombra) / 0.35); }
 .hero__sub { margin-top: clamp(1rem, 2.4vh, 1.5rem); max-width: 36rem; font-size: clamp(1.0625rem, 1rem + 0.35vw, 1.3125rem); color: color-mix(in srgb, var(--marfil) 92%, transparent); }
@@ -204,28 +202,15 @@ main:focus { outline: none; }
 .hero__hoy::before { content: ""; display: inline-block; width: 7px; height: 7px; margin-right: 0.6rem; border-radius: 50%; background: currentColor; opacity: 0.75; vertical-align: 0.12em; }
 .hero__hoy.abierto::before { background: var(--mar-claro); opacity: 1; box-shadow: 0 0 0 4px color-mix(in srgb, var(--mar-claro) 25%, transparent); }
 .hero .acciones { margin-top: clamp(1.5rem, 3.6vh, 2.5rem); }
-.hero__momentos { display: flex; justify-content: center; gap: clamp(0.75rem, 3vw, 2.75rem); list-style: none; padding: 0 var(--margen) clamp(1rem, 3vh, 2rem); }
-.sin-js .hero__momentos { visibility: hidden; }
-.hero__momentos button { display: grid; justify-items: center; gap: 0.7rem; min-width: 6.75rem; min-height: 48px; padding: 0.9rem 0.25rem 0.5rem; background: none; border: 0; cursor: pointer; color: color-mix(in srgb, var(--marfil) 70%, transparent); font: 500 0.75rem/1 var(--f-texto); letter-spacing: 0.16em; text-transform: uppercase; transition: color 0.3s var(--ease-ui); }
-.hero__momentos button[aria-pressed="true"] { color: var(--marfil); }
-@media (hover: hover) and (pointer: fine) { .hero__momentos button:hover { color: var(--marfil); } }
-.hero__barra { display: block; width: 100%; height: 1px; background: color-mix(in srgb, var(--marfil) 30%, transparent); overflow: hidden; }
-.hero__barra i { display: block; height: 100%; background: var(--marfil); transform: scaleX(0); transform-origin: left; }
-[aria-pressed="true"] > .hero__barra i { transform: scaleX(1); }
-.hero.rotando [aria-pressed="true"] > .hero__barra i { animation: progreso var(--duracion, 7s) linear both; }
-.hero.pausado .hero__barra i, .hero.pausado .hero__foto img { animation-play-state: paused !important; }
-@keyframes progreso { from { transform: scaleX(0); } }
 @media (prefers-reduced-motion: no-preference) {
-  .con-js:not(.captura) .hero__foto.activa img, .con-js:not(.captura) .hero__foto.sale img { animation: acercar 11s linear both; }
-  .con-js:not(.captura) .hero__foto.sale img { animation-play-state: paused; }
   .con-js:not(.captura) .hero__logo { animation: subir 1.3s var(--ease-salida) 0.1s both; }
   .con-js:not(.captura) .hero h1 .p > span { animation: palabra 1.15s var(--ease-salida) both; animation-delay: calc(0.3s + var(--i) * 65ms); }
   .con-js:not(.captura) .hero__sub { animation: subir 1s var(--ease-salida) 0.75s both; }
   .con-js:not(.captura) .hero__hoy { animation: subir 1s var(--ease-salida) 0.85s both; }
   .con-js:not(.captura) .hero .acciones { animation: subir 1s var(--ease-salida) 0.95s both; }
-  .con-js:not(.captura) .hero__momentos { animation: aparecer 1.2s var(--ease-ui) 1.3s both; }
 }
-@keyframes acercar { from { transform: scale(1.09); } to { transform: scale(1); } }
+@media (prefers-reduced-motion: no-preference) { .con-js:not(.captura) .hero__foto img { animation: acercar 14s var(--ease-salida) both; } }
+@keyframes acercar { from { transform: scale(1.08); } to { transform: scale(1); } }
 @keyframes palabra { from { transform: translateY(112%); } }
 @media (max-width: 699px) {
   .hero { min-height: 620px; }
@@ -234,8 +219,6 @@ main:focus { outline: none; }
   .hero__sub { font-size: 1rem; }
   .hero__hoy { font-size: 0.875rem; }
   .hero .acciones { flex-direction: column; align-items: stretch; width: min(100%, 22rem); }
-  .hero__momentos { gap: 0.25rem; padding-inline: 0.75rem; }
-  .hero__momentos button { min-width: 0; padding-inline: 0.65rem; letter-spacing: 0.12em; }
 }
 @media (max-height: 700px) and (max-width: 699px) {
   .hero__logo { display: none; }
@@ -611,14 +594,12 @@ main:focus { outline: none; }
 /* ---------- movimiento reducido y modo captura ---------- */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
-  .hero__foto { transition: opacity 0.4s linear; }
 }
 .captura *, .captura *::before, .captura *::after { animation: none !important; transition: none !important; }
 .captura .marca { opacity: 1 !important; visibility: visible !important; }
 
 /* ---------- impresión ---------- */
 @media print {
-  .cabecera, .indice, .aviso, .hero__fotos, .hero__velo, .hero__momentos, .acciones, .pestanas, .paneles, .platos, .carrusel__control, .insta, .banda, .cierre__foto, .espacio__puntos { display: none !important; }
   html, body, .hero, .cierre, .opiniones, .espacios, .pie { background: #fff !important; color: #000 !important; }
   .hero { height: auto; min-height: 0; margin: 0; }
   .carta__panel[hidden] { display: grid !important; }

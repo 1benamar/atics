@@ -125,64 +125,6 @@
     if (hoy.fecha > el.getAttribute("data-hasta")) { var n = el.querySelector("[data-menu-caducado]"); if (n) n.hidden = false; }
   });
 
-  /* ---------- portada: la terraza de mediodía a noche ---------- */
-  var hero = document.querySelector("[data-hero]");
-  if (hero) {
-    var contFotos = hero.querySelector(".hero__fotos");
-    var plantilla = hero.querySelector("template[data-mas-momentos]");
-    var botonesM = lista("[data-ir-momento]", hero);
-    var actualM = 0, girando = animar, retiro = null, pedido = 0;
-    var fotosM = function () { return lista(".hero__foto", contFotos); };
-    var completar = function () {
-      if (!plantilla) return;
-      contFotos.appendChild(plantilla.content.cloneNode(true));
-      plantilla.parentNode.removeChild(plantilla);
-      plantilla = null;
-    };
-    var listo = function (el) {
-      var img = el.querySelector("img");
-      if (img.complete && img.naturalWidth) return Promise.resolve();
-      if (img.decode) return img.decode().catch(function () {});
-      return new Promise(function (r) { img.addEventListener("load", r); img.addEventListener("error", r); });
-    };
-    var marcar = function (i) { botonesM.forEach(function (b, j) { b.setAttribute("aria-pressed", j === i ? "true" : "false"); }); };
-    var mostrar = function (i) {
-      var f = fotosM();
-      if (i === actualM || !f[i]) return;
-      var antes = f[actualM], ahora = f[i];
-      f.forEach(function (el) { if (el !== antes && el !== ahora) el.classList.remove("activa", "sale"); });
-      antes.classList.remove("activa"); antes.classList.add("sale");
-      ahora.classList.remove("sale"); ahora.classList.add("activa");
-      clearTimeout(retiro);
-      retiro = setTimeout(function () { antes.classList.remove("sale"); }, 1700);
-      actualM = i;
-    };
-    // cambia cuando la foto ya está descargada, para que el fundido no pase por negro
-    var ir = function (i) {
-      completar();
-      var n = ++pedido;
-      listo(fotosM()[i]).then(function () { if (n === pedido) { mostrar(i); if (girando) marcar(i); } });
-    };
-    botonesM.forEach(function (b, i) {
-      b.addEventListener("click", function () {
-        girando = false; hero.classList.remove("rotando");
-        marcar(i); ir(i);
-      });
-    });
-    if (girando) {
-      hero.classList.add("rotando");
-      hero.addEventListener("animationend", function (e) { if (e.animationName === "progreso" && girando) ir((actualM + 1) % botonesM.length); });
-      // se para fuera de pantalla y con la pestaña oculta (también si la página se abre en una pestaña de fondo)
-      var fuera = false;
-      var pausar = function () { hero.classList.toggle("pausado", fuera || document.hidden); };
-      if ("IntersectionObserver" in window) new IntersectionObserver(function (e) { fuera = !e[0].isIntersecting; pausar(); }).observe(hero);
-      document.addEventListener("visibilitychange", pausar);
-      pausar();
-    }
-    var despues = function () { setTimeout(completar, 500); };
-    if (document.readyState === "complete") despues(); else window.addEventListener("load", despues);
-  }
-
   /* ---------- pestañas de la carta ---------- */
   var cuerpo = document.querySelector("[data-pestanas]");
   var pestanas = [];
